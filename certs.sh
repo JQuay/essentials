@@ -58,9 +58,41 @@ keytool -importkeystore \
 -srcstorepass changeit -deststorepass changeit
 ```
 
+# Replace existing cert (renewed certificate)
+#NB: This overwrites the .p12 with the new cert and keeps the same alias.
+```sh
+openssl pkcs12 -export \
+  -inkey server.key \
+  -in new_server.crt \
+  -certfile chain.crt \
+  -out keystore.p12 \
+  -name tomcat \
+  -passout pass:changeit
+```
+
+
+#Import another cert into the same .p12 (as trusted cert)
+#Use keytool:
+```sh
+keytool -importcert \
+  -trustcacerts \
+  -alias new-ca \
+  -file new_ca.crt \
+  -keystore keystore.p12 \
+  -storetype PKCS12 \
+  -storepass changeit
+```
+
+
 # inspect keystore 
 ``` sh
 keytool -list -v -keystore keystore.p12 -storetype PKCS12 -storepass changeit
 ```
+
+
+
+
+
+
 
 
